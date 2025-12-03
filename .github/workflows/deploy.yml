@@ -37,11 +37,11 @@ jobs:
           oc apply -f k8s/serviceaccount.yaml
           oc apply -f k8s/clusterrole.yaml     # Now a Role (namespace-scoped)
           oc apply -f k8s/clusterrolebinding.yaml  # Now a RoleBinding (namespace-scoped)
-          oc apply -f k8s/cronjob.yaml
+          oc apply -f k8s/job.yaml
 
       - name: Verify deployment
         run: |
-          echo "CronJob status:"
-          oc get cronjob -n $NAMESPACE
+          echo "Job status:"
+          oc get job -n $NAMESPACE
           echo "ServiceAccount status:"
           oc get sa -n $NAMESPACE
