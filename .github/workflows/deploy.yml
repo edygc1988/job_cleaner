@@ -33,7 +33,7 @@ jobs:
       - name: Apply Kubernetes manifests
         run: |
           echo "Applying manifests to namespace: $NAMESPACE"
-          oc apply -f k8s/namespace.yaml
+          # Skip namespace creation if it already exists
           oc apply -f k8s/serviceaccount.yaml
           oc apply -f k8s/clusterrole.yaml
           oc apply -f k8s/clusterrolebinding.yaml
