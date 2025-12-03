@@ -1,0 +1,47 @@
+name: Deploy to OpenShift
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "k8s/**"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+env:
+  NAMESPACE: edygc1988-dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install OpenShift CLI
+        run: |
+          curl -L https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz -o oc.tar.gz
+          tar xzf oc.tar.gz
+          sudo install -o root -g root -m 0755 oc /usr/local/bin/oc
+          oc version --client
+
+      - name: Login to OpenShift
+        run: |
+          oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ secrets.OPENSHIFT_SERVER }}
+
+      - name: Apply Kubernetes manifests
+        run: |
+          echo "Applying manifests to namespace: $NAMESPACE"
+          oc apply -f k8s/namespace.yaml
+          oc apply -f k8s/serviceaccount.yaml
+          oc apply -f k8s/clusterrole.yaml
+          oc apply -f k8s/clusterrolebinding.yaml
+          oc apply -f k8s/cronjob.yaml
+
+      - name: Verify deployment
+        run: |
+          echo "CronJob status:"
+          oc get cronjob -n $NAMESPACE
+          echo "ServiceAccount status:"
+          oc get sa -n $NAMESPACE
