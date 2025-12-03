@@ -35,8 +35,8 @@ jobs:
           echo "Applying manifests to namespace: $NAMESPACE"
           # Skip namespace creation if it already exists
           oc apply -f k8s/serviceaccount.yaml
-          oc apply -f k8s/clusterrole.yaml
-          oc apply -f k8s/clusterrolebinding.yaml
+          oc apply -f k8s/clusterrole.yaml     # Now a Role (namespace-scoped)
+          oc apply -f k8s/clusterrolebinding.yaml  # Now a RoleBinding (namespace-scoped)
           oc apply -f k8s/cronjob.yaml
 
       - name: Verify deployment

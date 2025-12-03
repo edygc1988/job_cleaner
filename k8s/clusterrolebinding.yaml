@@ -1,10 +1,11 @@
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: RoleBinding
 metadata:
   name: job-cleaner
+  namespace: edygc1988-dev
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
+  kind: Role
   name: job-cleaner
 subjects:
   - kind: ServiceAccount
